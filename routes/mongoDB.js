@@ -12,47 +12,57 @@ var url = 'mongodb://localhost:27017/BankDB';
 // router.use('/database/post', postREST);
 // router.use('/database/del', delREST);
 /* GET users listing. */
-router.get('/get', function (req, res, next) {
+router.get('/add', function (req, res, next) {
     console.log('requested');
     MongoClient.connect(url, function (err, db) {
         assert.equal(null, err);
         console.log("Connected correctly to Mongo server");
         console.log(req.query);
+        // Get the documents collection
         var collection = db.collection('users');
-        // collection.insertMany([{"name": "1", "age": 1, "salary": 1}]);
+        // console.log(req.query[0]);
+        // collection.insertMany(JSON.parse(req.query));
+        var request = [];
+        for (x in req.query) {
+            request.push(JSON.parse(req.query[x]));
+            console.log(request);
+        }
+        collection.insertMany(request);
         db.close();
+        // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
+        //     console.log(data);
+        //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        //     res.end(data);
+        // });
     });
-    fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
-        console.log(data);
-        res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-        res.end(data);
-    });
-});
-var insertDocuments = function (db, callback) {
-    // Get the documents collection
-    var collection = db.collection('users');
-    // Insert some documents
-    collection.insertMany([{a: 1}, {a: 2}, {a: 3}], function (err, result) {
-        assert.equal(err, null);
-        assert.equal(3, result.result.n);
-        assert.equal(3, result.ops.length);
-        console.log("Inserted 3 documents into the document collection");
-        callback(result);
-    });
-};
-var findDocuments = function (db, callback) {
-    // Get the documents collection
-    var collection = db.collection('users');
-    // Find some documents
-    collection.find({}).toArray(function (err, docs) {
-        assert.equal(err, null);
-        assert.equal(2, docs.length);
-        console.log("Found the following records");
-        console.dir(docs);
-        callback(docs);
-    });
-}
-// Use connect method to connect to the Server
+})
 
+router.get('/get', function (req, res, next) {
+    MongoClient.connect(url, function (err, db) {
+        assert.equal(null, err);
+        console.log("Connected correctly to Mongo server");
+
+        // Get the documents collection
+        var collection = db.collection('users');
+
+        var whereStr = {};
+        collection.find(whereStr).toArray(function (err, result) {
+            if (err) {
+                console.log('Error:' + err);
+                return;
+            }
+            console.log(result);
+            db.close();
+            res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            res.end(JSON.stringify(result));
+            // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
+            //     console.log(data);
+            //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+            //     res.end(data);
+            // });
+        });
+
+    })
+})
 
 module.exports = router;
