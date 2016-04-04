@@ -39,6 +39,9 @@ router.route('/add').get(function (req, res, next) {
 });
 
 router.route('/get').get(function (req, res, next) {
+    // console.log(JSON.stringify(req));
+
+
     MongoClient.connect(url, function (err, db) {
         console.log("Connected correctly to Mongo server");
         // Get the documents collection
@@ -99,5 +102,23 @@ router.route('/del').all(function (req, res, next) {
         // });
     });
 });
+
+router.post('/put', function (req, res, next) {
+    // console.log(JSON.stringify(req));
+    console.log("put!");
+    console.log(req.query);
+    res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*'
+    });
+    res.end("success");
+    // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
+    //     console.log(data);
+    //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+    //     res.end(data);
+    // });
+});
+
 
 module.exports = router;
