@@ -5,19 +5,17 @@ var fs = require("fs");
 var MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 var assert = require('assert');
-
-
 var url = 'mongodb://localhost:27017/BankDB';
 
 /* GET users listing. */
 router.route('/add')
     .post(function (req, res, next) {
         console.log('requested');
-        console.log(req.body);
+        var insert = req.body;
         MongoClient.connect(url, function (err, db) {
             assert.equal(null, err);
             console.log("Connected correctly to Mongo server");
-
+            console.log('insert: ' + JSON.stringify(insert));
             // Get the documents collection
             var collection = db.collection('users');
             // console.log(req.query[0]);
@@ -27,12 +25,16 @@ router.route('/add')
             // request.push(req.body[x]);
             console.log(request);
             // }
-            collection.insert(req.body);
+            collection.insert(insert);
             db.close();
             // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
             //     console.log(data);
-            //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-            //     res.end(data);
+            res.writeHead(200, {
+                // 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*'
+            });
+            res.end();
             // });
         });
     });
