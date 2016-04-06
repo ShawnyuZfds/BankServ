@@ -5,14 +5,10 @@ var fs = require("fs");
 var MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 var assert = require('assert');
-var url = 'mongodb://localhost:27017/BankDB';
-// var getREST = require('./getREST');
-// var postREST = require('./postREST');
-// var delREST = require('./delREST');
 
-// router.use('/get', getREST);
-// router.use('/database/post', postREST);
-// router.use('/database/del', delREST);
+
+var url = 'mongodb://localhost:27017/BankDB';
+
 /* GET users listing. */
 router.route('/add')
     .post(function (req, res, next) {
@@ -122,5 +118,22 @@ router.post('/put', function (req, res, next) {
     // });
 });
 
-
+router.route('/test')
+    .post(function (req, res, next) {
+        console.log('requested');
+        console.log(req.body);
+        console.log(JSON.stringify(req.headers));
+        req.accepts('json,text');
+        req.accepts('application/json');
+        res.writeHead(200, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': '*'
+        })
+        res.end("post");
+        // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
+        //     console.log(data);
+        //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
+        //     res.end(data);
+        // });
+    });
 module.exports = router;
