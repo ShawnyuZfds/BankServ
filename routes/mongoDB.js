@@ -79,7 +79,7 @@ router.route('/del')
             var collection = db.collection('users');
             var whereStr = [];
             for (x in req.query) {
-                whereStr.push({_id: new mongodb.ObjectID(req.query[x])});
+                whereStr.push({_id: mongodb.ObjectID(req.query[x])});
             }
             collection.deleteMany({$or: whereStr}, function (err, result) {
                 if (err) {
@@ -119,11 +119,20 @@ router.route('/put')
     .put(function (req, res, next) {
         // console.log(JSON.stringify(req));
         console.log("put!");
-        console.log(req.body);
-        for (x in req.body) {
-            db.collection.updateOne({_id: new mongodb.ObjectID(req.body[x])}, req.body[x]);
-        }
-
+        console.log(req.body[0]);
+        MongoClient.connect(url, function (err, db) {
+            var collection = db.collection('users');
+            for (x in req.body) {
+                var exp = {_id: mongodb.ObjectID(req.body[x]._id)};
+                console.log(exp);
+                delete req.body[x]._id;
+                console.log(req.body[x]);
+                collection.updateOne(exp, req.body[x]);
+            }
+            setTimeout(function () {
+                db.close();
+            }, 500);
+        })
 
         res.writeHead(200, {
             // 'Content-Type': 'application/json',
