@@ -81,7 +81,7 @@ router.route('/del')
             for (x in req.query) {
                 whereStr.push({_id: new mongodb.ObjectID(req.query[x])});
             }
-            collection.removeMany({$or: whereStr}, function (err, result) {
+            collection.deleteMany({$or: whereStr}, function (err, result) {
                 if (err) {
                     console.log(err);
                     return;
@@ -119,9 +119,14 @@ router.route('/put')
     .put(function (req, res, next) {
         // console.log(JSON.stringify(req));
         console.log("put!");
-        console.log(req.query);
+        console.log(req.body);
+        for (x in req.body) {
+            db.collection.updateOne({_id: new mongodb.ObjectID(req.body[x])}, req.body[x]);
+        }
+
+
         res.writeHead(200, {
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': '*'
         });
@@ -133,22 +138,4 @@ router.route('/put')
         // });
     });
 
-router.route('/test')
-    .post(function (req, res, next) {
-        console.log('requested');
-        console.log(req.body);
-        console.log(JSON.stringify(req.headers));
-        req.accepts('json,text');
-        req.accepts('application/json');
-        res.writeHead(200, {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': '*'
-        })
-        res.end("post");
-        // fs.readFile(__dirname + "/" + "users.json", 'utf8', function (err, data) {
-        //     console.log(data);
-        //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
-        //     res.end(data);
-        // });
-    });
 module.exports = router;
