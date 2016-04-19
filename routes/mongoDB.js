@@ -8,7 +8,7 @@ var assert = require('assert');
 var url = 'mongodb://localhost:27017/BankDB';
 
 /* GET users listing. */
-router.route('/add')
+router.route('/')
     .post(function (req, res, next) {
         console.log('requested');
         var insert = req.body;
@@ -38,9 +38,7 @@ router.route('/add')
             res.end();
             // });
         });
-    });
-
-router.route('/get')
+    })
     .get(function (req, res, next) {
         // console.log(JSON.stringify(req));
         MongoClient.connect(url, function (err, db) {
@@ -65,9 +63,7 @@ router.route('/get')
             });
 
         })
-    });
-
-router.route('/del')
+    })
     .delete(function (req, res, next) {
         console.log('del requested');
         MongoClient.connect(url, function (err, db) {
@@ -113,9 +109,7 @@ router.route('/del')
             //     res.end(data);
             // });
         });
-    });
-
-router.route('/put')
+    })
     .put(function (req, res, next) {
         // console.log(JSON.stringify(req));
         console.log("put!");
@@ -145,6 +139,14 @@ router.route('/put')
         //     res.writeHead(200, {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'});
         //     res.end(data);
         // });
-    });
+    })
+// router.route('/')
+//
+//
+// router.route('/')
+//
+//
+// router.route('/')
+
 
 module.exports = router;
